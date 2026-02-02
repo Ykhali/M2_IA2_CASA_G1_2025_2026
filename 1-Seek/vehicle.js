@@ -12,7 +12,7 @@ class Vehicle {
     this.maxForce = 0.1;
     // rayon du véhicule
     this.r = 16;
-    
+    this.perceptionRadius = 50; // pour éviter l'erreur dans show()
   }
 
   applyBehaviors(target) {
