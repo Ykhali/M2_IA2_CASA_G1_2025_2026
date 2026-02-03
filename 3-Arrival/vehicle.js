@@ -27,7 +27,7 @@ class Vehicle {
     return this.seek(target);
   }
 
-  arrive(target, d=0) {
+  arrive(target, d = 0) {
     // 2nd argument true enables the arrival behavior
     // 3rd argument d is the distance behind the target
     // for "snake" behavior
@@ -38,7 +38,7 @@ class Vehicle {
     // recopier code de flee de l'exemple précédent
   }
 
-  seek(target, arrival = false, d=0) {
+  seek(target, arrival = false, d = 0) {
     let valueDesiredSpeed = this.maxSpeed;
 
     if (arrival) {
@@ -47,7 +47,7 @@ class Vehicle {
       // est inférieure à ce rayon, on ralentit le véhicule
       // desiredSpeed devient inversement proportionnelle à la distance
       // si la distance est petite, force = grande
-      // Vous pourrez utiliser la fonction P5 
+      // Vous pourrez utiliser la fonction P5
       // distance = map(valeur, valeurMin, valeurMax, nouvelleValeurMin, nouvelleValeurMax)
       // qui prend une valeur entre valeurMin et valeurMax et la transforme en une valeur
       // entre nouvelleValeurMin et nouvelleValeurMax
@@ -69,7 +69,13 @@ class Vehicle {
       // si d = rayon alors desiredSpeed = maxSpeed
       // si d = 0 alors desiredSpeed = 0
       if (distance < this.rayonZoneDeFreinage) {
-        valueDesiredSpeed = map(distance, d, this.rayonZoneDeFreinage, 0, this.maxSpeed);
+        valueDesiredSpeed = map(
+          distance,
+          d,
+          this.rayonZoneDeFreinage,
+          0,
+          this.maxSpeed,
+        );
       }
     }
 
@@ -78,7 +84,7 @@ class Vehicle {
     // un vecteur qui va vers la cible, c'est pour le moment la vitesse désirée
     let desiredSpeed = p5.Vector.sub(target, this.pos);
     desiredSpeed.setMag(valueDesiredSpeed);
-   
+
     // Force = desiredSpeed - currentSpeed
     let force = p5.Vector.sub(desiredSpeed, this.vel);
     force.limit(this.maxForce);
@@ -97,7 +103,6 @@ class Vehicle {
   }
 
   show() {
-    
     stroke(255);
     strokeWeight(2);
     fill(255);
@@ -105,8 +110,7 @@ class Vehicle {
     strokeWeight(2);
     push();
     translate(this.pos.x, this.pos.y);
-    if(this.vel.mag() > 0)
-      rotate(this.vel.heading());
+    if (this.vel.mag() > 0) rotate(this.vel.heading());
 
     triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
     pop();

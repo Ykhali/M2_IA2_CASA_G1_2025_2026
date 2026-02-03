@@ -28,10 +28,11 @@ function setup() {
   // Les parametres sont : valeur min, valeur max,
   // valeur initiale, pas
   sliderMaxSpeed = createSlider(1, 20, 4, 1);
-  sliderMaxSpeed.position(10, 10);
+  sliderMaxSpeed.position(920, 10);
+  sliderMaxSpeed.size(80);
 
   sliderMaxForce = createSlider(0.01, 2, 0.1, 0.01);
-  sliderMaxForce.position(10, 40);
+  sliderMaxForce.position(810, 10);
 }
 
 // la fonction draw est appelée en boucle par p5.js, 60 fois par seconde par défaut
