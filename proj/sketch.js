@@ -149,7 +149,10 @@ function draw() {
     }
 
     // Display Obstacles
-    for (let o of obstacles) o.show(debug);
+    for (let o of obstacles) {
+        o.show(debug);
+        o.update(vehicles, snakes, bullets);
+    }
 
     // Display Paths
     for (let p of paths) p.show();
