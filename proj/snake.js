@@ -2,22 +2,64 @@ class Snake extends Vehicle {
     constructor(x, y, index, color) {
         super(x, y);
         this.index = index;
-        // Liste des positions précédentes pour l'effet de traînée (optionnel, ou juste suivre le précédent)
         this.history = [];
-        this.color = color || color(random(255), random(255), random(255));
+        this.color = color || color(random(50, 150), random(150, 255), random(50, 150));
+        this.r = 12; // Base radius
     }
 
-    // Surcharge de show pour une apparence différente
     show() {
-        fill(this.color);
+        push();
+        translate(this.pos.x, this.pos.y);
+        rotate(this.vel.heading());
+
         noStroke();
-        circle(this.pos.x, this.pos.y, this.r * 2);
+        fill(this.color);
 
-        // Si on a un index > 0, on peut dessiner une ligne vers le précédent dans la liste globale
-        // Mais cela nécessite l'accès à la liste globale. 
-        // On le fera dans sketch.js ou on passera la référence.
+        if (this.index === 0) {
+            // --- HEAD ---
+            // Main Head Shape
+            ellipse(0, 0, this.r * 2.5, this.r * 2);
+
+            // Eyes
+            fill(255); // White
+            ellipse(this.r * 0.5, -this.r * 0.5, this.r * 0.8, this.r * 0.6);
+            ellipse(this.r * 0.5, this.r * 0.5, this.r * 0.8, this.r * 0.6);
+
+            // Pupils (Slit like a snake)
+            fill(0);
+            ellipse(this.r * 0.6, -this.r * 0.5, this.r * 0.2, this.r * 0.5);
+            ellipse(this.r * 0.6, this.r * 0.5, this.r * 0.2, this.r * 0.5);
+
+            // Tongue (Slithering animation)
+            if (frameCount % 60 < 30) { // Flicker tongue
+                stroke(255, 0, 0);
+                strokeWeight(2);
+                noFill();
+                beginShape();
+                vertex(this.r, 0);
+                vertex(this.r + 10, 0);
+                vertex(this.r + 15, -5);
+                endShape();
+                beginShape();
+                vertex(this.r + 10, 0);
+                vertex(this.r + 15, 5);
+                endShape();
+            }
+        } else {
+            // --- BODY ---
+            // Taper effect for body or just standard
+            // We don't track total length here easily, so we just draw good segments
+            // Scales to simulate scales/skin
+
+            // Main body circle
+            ellipse(0, 0, this.r * 2, this.r * 1.8);
+
+            // Pattern (stripes)
+            stroke(0, 50);
+            strokeWeight(1);
+            line(0, -this.r + 2, 0, this.r - 2);
+        }
+
+        pop();
     }
-
-    // Le comportement spécifique du serpent (suivre le précédent) est souvent géré dans le sketch
-    // par la logique "Arrive" sur la position du précédent.
 }

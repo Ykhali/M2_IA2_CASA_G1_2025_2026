@@ -106,13 +106,17 @@ class Vehicle {
         return this.seek(target).mult(-1);
     }
 
-    arrive(target) {
+    arrive(target, stoppingDist = 0) {
         let desired = p5.Vector.sub(target, this.pos);
         let d = desired.mag();
         let speed = this.maxSpeed;
-        if (d < 100) {
-            speed = map(d, 0, 100, 0, this.maxSpeed);
+
+        let slowdownRadius = 100;
+
+        if (d < slowdownRadius) {
+            speed = map(d, stoppingDist, slowdownRadius, 0, this.maxSpeed);
         }
+
         desired.setMag(speed);
         let steer = p5.Vector.sub(desired, this.vel);
         steer.limit(this.maxForce);

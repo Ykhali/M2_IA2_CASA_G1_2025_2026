@@ -297,15 +297,11 @@ function draw() {
             // Warning: This breaks if we delete snakes. 
             // Correction: Rely on the simple loop order since we push head then body.
             if (prev) {
-                let arriveForce = s.arrive(prev.pos);
-                arriveForce.mult(5); // Strong cohesion
+                // Behavior from Arrival1: Arrive at previous segment with 30px spacing
+                let arriveForce = s.arrive(prev.pos, 30);
+                arriveForce.mult(5); // Strong cohesion to keep chain tight
                 s.applyForce(arriveForce);
 
-                // Keep distance
-                let d = p5.Vector.dist(s.pos, prev.pos);
-                if (d < 20) {
-                    s.vel.mult(0.5); // Brake
-                }
                 prev = s;
             }
         }
