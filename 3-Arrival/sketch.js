@@ -6,17 +6,18 @@ let snakes = [];
 // mode = pour changer le comportement de l'application
 let mode = "snake";
 
+
 // Appelée avant de démarrer l'animation
 function preload() {
   // en général on charge des images, des fontes de caractères etc.
-  font = loadFont("./assets/inconsolata.otf");
+  font = loadFont('./assets/inconsolata.otf');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // on crée un snake
-  let snake = new Snake(width / 2, height / 2, 30, 30, "lime");
+  let snake = new Snake(width / 2, height / 2, 30, 30, 'lime');
   snakes.push(snake);
 
   // La cible, ce sera la position de la souris
@@ -25,10 +26,10 @@ function setup() {
   // On creer un tableau de points à partir du texte
   // Texte qu'on affiche avec textToPoint
   // Get the point array.
-  // parameters are : text, x, y, fontSize, options.
+  // parameters are : text, x, y, fontSize, options. 
   // sampleFactor : 0.01 = gros points, 0.1 = petits points
   // ca représente la densité des points
-  points = font.textToPoints("Hello!", 350, 250, 305, { sampleFactor: 0.03 });
+  points = font.textToPoints('Hello!', 350, 250, 305, { sampleFactor: 0.03 });
 
   // on cree des vehicules, autant que de points
   creerVehicules(points.length);
@@ -49,7 +50,7 @@ function draw() {
   //background(0, 0, 0, 10);
 
   // On dessine les snakes instances de la classe Snake
-  snakes.forEach((snake) => {
+  snakes.forEach(snake => {
     let targetBruitee = target.copy();
     // Le 1er serpent sera sur la gauche de la souris à 50 pixels
     // Le 2ème à droite, etc.
@@ -59,8 +60,8 @@ function draw() {
     let offsetX = cos(angleOffset) * distanceFromTarget;
     let offsetY = sin(angleOffset) * distanceFromTarget;
     targetBruitee.x += offsetX;
-    targetBruitee.y += offsetY;
-    snake.arrive(targetBruitee);
+    targetBruitee.y += offsetY; 
+    snake.move(targetBruitee);
     snake.show();
   });
 
@@ -85,12 +86,12 @@ function draw() {
       case "snake":
         if (index === 0) {
           // le premier véhicule suit la souris avec arrivée
-          steeringForce = vehicle.arrive(target);
+          steeringForce = vehicle.wander();
         } else {
           // les autres véhicules suivent le véhicule précédent avec arrivée
           let cible = vehicles[index - 1].pos;
           steeringForce = vehicle.arrive(cible, 30);
-        }
+        };
         break;
       case "text":
         // chaque véhicule suit le point correspondant du texte
@@ -107,7 +108,7 @@ function draw() {
 
 function dessinerLesPointsDuTexte() {
   // On affiche le texte avec des cercles définis par le tableau points
-  points.forEach((pt) => {
+  points.forEach(pt => {
     push();
     fill("grey");
     noStroke();
@@ -117,19 +118,19 @@ function dessinerLesPointsDuTexte() {
 }
 
 function keyPressed() {
-  if (key === "d") {
+  if (key === 'd') {
     Vehicle.debug = !Vehicle.debug;
-  } else if (key === "s") {
+  } else if (key === 's') {
     mode = "snake";
-  } else if (key === "t") {
+  } else if (key === 't') {
     mode = "text";
-  } else if (key === "a") {
+  } else if (key === 'a') {
     // on crée un nouveau snake
     // taille aléatoire entre 10 et 50
     let taille = floor(random(10, 50));
     // couleur aléatoire
     let couleur = color(random(255), random(255), random(255));
-    let snake = new Snake(random(width), random(height), taille, 20, couleur);
+    let snake = new SnakeWander(random(width), random(height), taille, 20, couleur);
     snakes.push(snake);
   }
   // todo : touche "s" fait le snake, "v" ajoute un véhicule,
