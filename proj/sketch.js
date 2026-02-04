@@ -271,14 +271,9 @@ function draw() {
     }
 
     // Handle Snakes
-    // Logic: Head seeks mouse (Arrive), body parts arrive at previous part
-
-    // Group snakes by "clusters" is tricky with flat array. 
-    // Ideally we should have Snake object containing segments.
-    // But sticking to flat array as per previous implementation logic:
-
-    // Better logic: iterate snakes, if index 0 -> head logic. If index > 0 -> follow prev.
-    // WARNING: "prev" assumes order in array.
+    let snakeHeads = snakes.filter(s => s.index === 0);
+    let totalSnakes = snakeHeads.length;
+    let currentSnakeIndex = 0;
 
     let prev = null;
     for (let s of snakes) {
@@ -287,8 +282,33 @@ function draw() {
 
         if (s.index === 0) {
             // Head
-            s.applyForce(s.arrive(target));
+
+            // Logic for multiple snakes offset
+            let targetPos = target.copy();
+            if (totalSnakes > 1) {
+                // Map index 0..total-1 to -PI/3..PI/3
+                let angleOffset = map(currentSnakeIndex, 0, totalSnakes, -PI / 3, PI / 3);
+
+                // Position them in an arc behind/around target based on mouse direction?
+                // Or just simple screen relative offset like multiple mouse cursors
+                // Let's use simple circle around target
+                let r = 60;
+                // Add PI/2 to align horizontally if we assume 0 is right
+                let startAngle = -PI;
+                let angle = map(currentSnakeIndex, 0, totalSnakes, startAngle - PI / 4, startAngle + PI / 4);
+
+                // Actually, let's keep it simple: 
+                // Separate them perpendicular to velocity? No, they all seek mouse.
+                // Just random offset? No, organized.
+                // Arrival1 separates them by angle relative to array index.
+                let offset = p5.Vector.fromAngle(angleOffset + PI / 2).mult(60);
+                targetPos.add(offset);
+            }
+
+            s.applyForce(s.arrive(targetPos));
+
             prev = s;
+            currentSnakeIndex++;
         } else {
             // Body segment
             // Must find its predecessor. In the flat array, it's usually the one before it 
