@@ -1,6 +1,7 @@
 let vehicles = [];
 let obstacles = [];
 let snakes = [];
+let bullets = [];
 let paths = []; // Support multiple paths
 let target;
 
@@ -175,13 +176,50 @@ function draw() {
             v.wander();
         } else if (v.behavior === 'Boid (Flocking)') {
             v.flock(vehicles);
-            // Also wander a bit or seek to stay on screen?
-            v.edges(); // Boids need edges logic
+            v.edges();
+        } else if (v.behavior === 'Enemy') {
+            let closest = null;
+            let closestDist = Infinity;
+            // Target nearest vehicle
+            for (let other of vehicles) {
+                if (other !== v && other.behavior !== 'Enemy') {
+                    let d = p5.Vector.dist(v.pos, other.pos);
+                    if (d < closestDist) {
+                        closestDist = d;
+                        closest = other;
+                    }
+                }
+            }
+            // Also target snakes
+            for (let s of snakes) {
+                if (s.index === 0) { // Head only
+                    let d = p5.Vector.dist(v.pos, s.pos);
+                    if (d < closestDist) {
+                        closestDist = d;
+                        closest = s;
+                    }
+                }
+            }
+
+            if (closest && closestDist < 300) {
+                v.applyForce(v.pursue(closest));
+
+                // Shoot if close enough and facing
+                // Cooldown 60 frames (~1 sec)
+                // Also check if facing target somewhat (dot product)
+                let toTarget = p5.Vector.sub(closest.pos, v.pos);
+                if (closestDist < 200 && (frameCount - v.lastShotTime > 60) && v.vel.dot(toTarget) > 0) {
+                    bullets.push(new Bullet(v.pos.x, v.pos.y, v.vel.heading()));
+                    v.lastShotTime = frameCount;
+                }
+            } else {
+                v.wander();
+            }
         }
 
         // 3. Path Following (Global check: if paths exist, follow closest?)
         // Pour simplifier : si un chemin existe et que le mode n'est pas "Wander" pur
-        if (paths.length > 0 && v.behavior !== 'Wander') {
+        if (paths.length > 0 && v.behavior !== 'Wander' && v.behavior !== 'Enemy') {
             // For simplicity, follow first path
             let followForce = v.follow(paths[0]);
             v.applyForce(followForce);
@@ -190,6 +228,43 @@ function draw() {
         v.update();
         v.edges();
         v.show();
+    }
+
+    // Handle Bullets
+    for (let i = bullets.length - 1; i >= 0; i--) {
+        let b = bullets[i];
+        b.update();
+        b.show();
+
+        let hit = false;
+
+        // Check collisions with Vehicles
+        for (let j = vehicles.length - 1; j >= 0; j--) {
+            let v = vehicles[j];
+            if (v.behavior !== 'Enemy' && b.hits(v)) {
+                // Hit!
+                vehicles.splice(j, 1); // Remove vehicle
+                hit = true;
+                break;
+            }
+        }
+
+        if (!hit) {
+            // Check collisions with Snake Head (simple)
+            for (let j = snakes.length - 1; j >= 0; j--) {
+                if (snakes[j].index === 0 && b.hits(snakes[j])) {
+                    // Remove ALL snakes
+                    snakes = [];
+                    hit = true;
+                    break;
+                }
+            }
+        }
+
+        // Remove bullet if hit or dead
+        if (hit || b.isDead() || b.edges()) {
+            bullets.splice(i, 1);
+        }
     }
 
     // Handle Snakes
@@ -244,4 +319,13 @@ function draw() {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+}
+
+function keyPressed() {
+    if (key === 'e' || key === 'E') {
+        let enemy = new Vehicle(mouseX, mouseY);
+        enemy.behavior = "Enemy";
+        enemy.maxSpeed = sliderMaxSpeed.value() * 1.3;
+        vehicles.push(enemy);
+    }
 }

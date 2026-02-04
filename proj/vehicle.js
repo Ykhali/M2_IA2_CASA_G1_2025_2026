@@ -13,6 +13,9 @@ class Vehicle {
         // Pour Wander
         this.wanderTheta = PI / 2;
 
+        // Attack Cooldown
+        this.lastShotTime = 0;
+
         // Debug info
         this.debug = false;
     }
@@ -34,16 +37,42 @@ class Vehicle {
         rotate(this.vel.heading());
 
         stroke(255);
-        strokeWeight(2);
+        strokeWeight(1);
 
         // Color based on behavior
         if (this.behavior === "Seek") fill(100, 255, 100);
         else if (this.behavior === "Flee") fill(255, 100, 100);
         else if (this.behavior === "Wander") fill(100, 100, 255);
         else if (this.behavior === "Boid (Flocking)") fill(200, 200, 50);
-        else fill(127);
+        else if (this.behavior === "Enemy") {
+            // Cool Enemy Design: Dark Red Spiked Ship
+            fill(150, 0, 0);
+            stroke(255, 0, 0);
+            strokeWeight(2);
+            beginShape();
+            vertex(this.r * 2, 0); // Nose
+            vertex(-this.r, -this.r); // Back Left
+            vertex(-this.r / 2, 0); // Inner back
+            vertex(-this.r, this.r); // Back Right
+            endShape(CLOSE);
 
-        triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
+            // Engines
+            fill(255, 150, 0);
+            noStroke();
+            circle(-this.r, -this.r / 2, 5);
+            circle(-this.r, this.r / 2, 5);
+        }
+        else {
+            fill(127);
+            stroke(255);
+            strokeWeight(2);
+            triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
+        }
+
+        // Default triangle for non-enemies if not handled above
+        if (this.behavior !== "Enemy") {
+            triangle(-this.r, -this.r / 2, -this.r, this.r / 2, this.r, 0);
+        }
 
         if (this.debug) {
             noFill();
