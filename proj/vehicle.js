@@ -120,33 +120,57 @@ class Vehicle {
     }
 
     avoid(obstacles) {
-        let desired = null;
         let ahead = this.vel.copy();
-        ahead.setMag(50);
-        ahead.add(this.pos);
+        ahead.mult(50); // Lookahead static or dynamic 
+
+        let ahead2 = ahead.copy().mult(0.5);
+
+        if (this.debug) {
+            push();
+            stroke(0, 255, 0);
+            line(this.pos.x, this.pos.y, this.pos.x + ahead.x, this.pos.y + ahead.y);
+            pop();
+        }
+
         let mostThreatening = null;
+        let closestBoxPos = null;
         let closestDist = 10000;
+
         for (let obstacle of obstacles) {
-            let d = p5.Vector.dist(this.pos, obstacle.pos);
-            if (d < obstacle.r + 50) {
-                let toObstacle = p5.Vector.sub(obstacle.pos, this.pos);
-                if (this.vel.dot(toObstacle) > 0) {
-                    if (d < closestDist) {
-                        closestDist = d;
-                        mostThreatening = obstacle;
-                    }
-                }
+            // Line Circle Intersection Check
+            let collision = this.lineIntersectsCircle(ahead, ahead2, obstacle);
+
+            if (collision && (mostThreatening == null || p5.Vector.dist(this.pos, obstacle.pos) < p5.Vector.dist(this.pos, mostThreatening.pos))) {
+                mostThreatening = obstacle;
             }
         }
+
+        let avoidance = createVector(0, 0);
+
         if (mostThreatening != null) {
-            let avoidForce = p5.Vector.sub(ahead, mostThreatening.pos);
-            avoidForce.normalize();
-            avoidForce.mult(this.maxSpeed);
-            avoidForce.sub(this.vel);
-            avoidForce.limit(this.maxForce);
-            return avoidForce;
+            avoidance.x = ahead.x - mostThreatening.pos.x;
+            avoidance.y = ahead.y - mostThreatening.pos.y;
+            avoidance.normalize();
+            avoidance.mult(this.maxForce); // Should be maxAvoidForce maybe
+            // Reynolds uses maxSpeed for steering usually, or maxForce directly
+            avoidance.setMag(this.maxSpeed);
+            avoidance.sub(this.vel);
+            avoidance.limit(this.maxForce);
         }
-        return createVector(0, 0);
+        return avoidance;
+    }
+
+    lineIntersectsCircle(ahead, ahead2, obstacle) {
+        // Check if circle is close to line ending at ahead
+        // Simple version: check distance of ahead tip and ahead2 tip to center
+
+        let p1 = p5.Vector.add(this.pos, ahead);
+        let p2 = p5.Vector.add(this.pos, ahead2);
+
+        let d1 = p5.Vector.dist(obstacle.pos, p1);
+        let d2 = p5.Vector.dist(obstacle.pos, p2);
+
+        return d1 <= obstacle.r || d2 <= obstacle.r || p5.Vector.dist(obstacle.pos, this.pos) <= obstacle.r;
     }
 
     follow(path) {
