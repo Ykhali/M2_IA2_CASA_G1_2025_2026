@@ -1,0 +1,31 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Pour éviter les scrollbars si le canvas prend tout l'écran */
+  background-color: #000;
+  color: white;
+  font-family: sans-serif;
+}
+
+canvas {
+  display: block;
+}
+
+#controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+  pointer-events: auto; /* Pour que les clics sur les boutons fonctionnent */
+}
+
+.control-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: inline-block;
+  width: 120px;
+}
