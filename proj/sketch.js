@@ -148,7 +148,7 @@ function draw() {
     }
 
     // Display Obstacles
-    for (let o of obstacles) o.show();
+    for (let o of obstacles) o.show(debug);
 
     // Display Paths
     for (let p of paths) p.show();
