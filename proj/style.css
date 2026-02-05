@@ -1,10 +1,27 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Pour éviter les scrollbars si le canvas prend tout l'écran */
-  background-color: #000;
+  overflow: hidden;
   color: white;
   font-family: sans-serif;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  /* Background image */
+  background-color: #0a0a1a;
+  background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+main {
+  position: relative;
+  width: 100%;
+  height: 100vh;
 }
 
 canvas {
@@ -12,13 +29,18 @@ canvas {
 }
 
 #controls {
-  position: absolute;
+  position: fixed;
   top: 10px;
   left: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  border-radius: 8px;
-  pointer-events: auto; /* Pour que les clics sur les boutons fonctionnent */
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  border-radius: 12px;
+  pointer-events: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1000;
+  max-width: 280px;
 }
 
 .control-group {
@@ -28,4 +50,77 @@ canvas {
 label {
   display: inline-block;
   width: 120px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.95);
 }
+
+/* Style for sliders */
+input[type="range"] {
+  cursor: pointer;
+}
+
+/* Style for select dropdowns */
+select {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+select:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+select option {
+  background: #1a1a2e;
+  color: white;
+}
+
+/* Style for buttons */
+button {
+  background: rgba(220, 50, 50, 0.9);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+button:hover {
+  background: rgba(255, 60, 60, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 50, 50, 0.5);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Style for checkbox */
+input[type="checkbox"] {
+  cursor: pointer;
+  margin-right: 6px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
