@@ -3,6 +3,7 @@ let bullets = [];
 let enemies = [];
 let asteroids = [];
 let foods = []; // Power-ups
+let snakes = []; // Neutral/Hostile entities
 let particles; // Particle System
 
 let score = 0;
@@ -36,6 +37,13 @@ function setup() {
     select('#start-btn').mousePressed(startGame);
     select('#restart-btn').mousePressed(startGame);
 
+    // UI for spawning snakes (Dynamically created for now)
+    let btn = createButton('Add Snake');
+    btn.position(10, 70);
+    btn.mousePressed(() => {
+        snakes.push(new Snake(random(width), random(height), '#a0f'));
+    });
+
     resetGame();
 }
 
@@ -45,6 +53,7 @@ function resetGame() {
     enemies = [];
     asteroids = [];
     foods = [];
+    snakes = [];
     particles = new ParticleSystem(); // Init Particles
     score = 0;
     updateUI();
@@ -193,8 +202,11 @@ function runGame() {
 
     // Food / Powerups
     // Spawn random food
-    if (frameCount % 600 === 0) { // Every 10 seconds
-        foods.push(new Food(random(50, width - 50), random(50, height - 50)));
+    if (frameCount % 600 === 0) { // Every 10 seconds (Energy)
+        foods.push(new Food(random(50, width - 50), random(50, height - 50), 'ENERGY'));
+    }
+    if (frameCount % 300 === 0) { // Every 5 seconds (Snake Food)
+        foods.push(new Food(random(50, width - 50), random(50, height - 50), 'BIOMASS'));
     }
 
     for (let i = foods.length - 1; i >= 0; i--) {
@@ -202,14 +214,67 @@ function runGame() {
         f.update();
         f.show();
 
-        // Collect
+        let eaten = false;
+
+        // Player Collect
         if (p5.Vector.dist(player.pos, f.pos) < player.r + f.r) {
-            player.activateBoost();
-            particles.createExplosion(player.pos.x, player.pos.y, '#0f0', 10);
+            if (f.type === 'ENERGY') {
+                player.activateBoost();
+                particles.createExplosion(player.pos.x, player.pos.y, '#0f0', 10);
+                score += 50;
+                eaten = true;
+            }
+        }
+
+        if (eaten || f.isDead()) {
             foods.splice(i, 1);
-            score += 50;
-        } else if (f.isDead()) {
-            foods.splice(i, 1);
+        }
+    }
+
+    // Snakes Logic
+    for (let i = snakes.length - 1; i >= 0; i--) {
+        let s = snakes[i];
+
+        // Find closest Biomass
+        let closestFood = null;
+        let minDist = Infinity;
+        for (let f of foods) {
+            if (f.type === 'BIOMASS') {
+                let d = p5.Vector.dist(s.pos, f.pos);
+                if (d < minDist) {
+                    minDist = d;
+                    closestFood = f;
+                }
+            }
+        }
+
+        s.updateSnake(closestFood);
+        s.show();
+
+        // Eating Logic
+        for (let j = foods.length - 1; j >= 0; j--) {
+            let f = foods[j];
+            if (f.type === 'BIOMASS' && p5.Vector.dist(s.pos, f.pos) < s.r + f.r) {
+                s.grow();
+                // particles.createExplosion(s.pos.x, s.pos.y, '#f0f', 5);
+                foods.splice(j, 1);
+            }
+        }
+
+        // Damage Logic (Bullets)
+        for (let j = bullets.length - 1; j >= 0; j--) {
+            let b = bullets[j];
+            if (b.hits(s)) {
+                s.shrink();
+                particles.createExplosion(s.pos.x, s.pos.y, '#a0f', 10);
+                bullets.splice(j, 1);
+                // If snake is too small, maybe kill it? For now just shrink minimum
+                if (s.length <= 2) {
+                    snakes.splice(i, 1);
+                    score += 100;
+                    break; // Snake died
+                }
+            }
         }
     }
 
@@ -231,6 +296,13 @@ function gameOver() {
     uiFinalScore.html('Final Score: ' + score);
 }
 
+
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+}
+
+function keyPressed() {
+    if (key === 's' || key === 'S') {
+        snakes.push(new Snake(random(width), random(height), '#a0f'));
+    }
 }
