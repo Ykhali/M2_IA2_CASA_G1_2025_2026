@@ -30,17 +30,12 @@ class Asteroid {
     show() {
         push();
         translate(this.pos.x, this.pos.y);
-        stroke(200);
-        fill(100);
-        beginShape();
-        for (let i = 0; i < TWO_PI; i += TWO_PI / this.total) {
-            let angle = i;
-            let r = this.r + this.offset[Math.floor(i / (TWO_PI / this.total)) % this.total];
-            let x = r * cos(angle);
-            let y = r * sin(angle);
-            vertex(x, y);
-        }
-        endShape(CLOSE);
+        // Add some rotation
+        rotate(frameCount * 0.01 + this.r);
+
+        imageMode(CENTER);
+        image(imgAsteroid, 0, 0, this.r * 2.2, this.r * 2.2);
+
         pop();
     }
 

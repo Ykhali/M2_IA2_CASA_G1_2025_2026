@@ -95,25 +95,14 @@ class Enemy {
     show() {
         push();
         translate(this.pos.x, this.pos.y);
-        rotate(this.vel.heading());
+        rotate(this.vel.heading() + PI / 2); // Adjust for up-facing sprites
 
-        stroke(255);
-        fill(this.color);
+        imageMode(CENTER);
 
         if (this.type === 'SEEKER') {
-            // Arrow shape
-            triangle(this.r, 0, -this.r, -this.r / 2, -this.r, this.r / 2);
+            image(imgEnemySeeker, 0, 0, this.r * 2.5, this.r * 2.5);
         } else {
-            // Hexagonish shape
-            beginShape();
-            for (let i = 0; i < TWO_PI; i += TWO_PI / 6) {
-                let x = cos(i) * this.r;
-                let y = sin(i) * this.r;
-                vertex(x, y);
-            }
-            endShape(CLOSE);
-            // Cannon
-            rect(0, -5, this.r + 10, 10);
+            image(imgEnemyShooter, 0, 0, this.r * 2.5, this.r * 2.5);
         }
 
         pop();

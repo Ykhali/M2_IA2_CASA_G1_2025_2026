@@ -2,11 +2,23 @@ let player;
 let bullets = [];
 let enemies = [];
 let asteroids = [];
+let particles; // Particle System
 
 let score = 0;
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
 
 let uiScore, uiHealthBar, uiHealthFill, uiStartScreen, uiGameUI, uiGameOverScreen, uiFinalScore;
+
+// Assets
+let imgPlayer, imgEnemySeeker, imgEnemyShooter, imgAsteroid, imgBg;
+
+function preload() {
+    imgPlayer = loadImage('assets/player.png');
+    imgEnemySeeker = loadImage('assets/enemy_seeker.png');
+    imgEnemyShooter = loadImage('assets/enemy_shooter.png');
+    imgAsteroid = loadImage('assets/asteroid.png');
+    imgBg = loadImage('assets/bg.png');
+}
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -31,6 +43,7 @@ function resetGame() {
     bullets = [];
     enemies = [];
     asteroids = [];
+    particles = new ParticleSystem(); // Init Particles
     score = 0;
     updateUI();
 }
@@ -50,14 +63,17 @@ function startGame() {
 }
 
 function draw() {
-    background(0);
+    // Draw Background
+    image(imgBg, 0, 0, width, height); // Stretch background
+
+    // Run Particle System
+    if (particles) particles.run();
 
     if (gameState === 'PLAYING') {
         runGame();
     } else if (gameState === 'MENU') {
-        // Background animation for menu
-        background(0, 0, 20);
         // Maybe show some floating asteroids
+        // Just keeping generic background for now
     } else if (gameState === 'GAMEOVER') {
         // Maybe show static last frame or just black
     }
@@ -108,9 +124,12 @@ function runGame() {
             for (let j = enemies.length - 1; j >= 0; j--) {
                 if (b.hits(enemies[j])) {
                     if (enemies[j].takeDamage(10)) {
+                        // Explosion
+                        particles.createExplosion(enemies[j].pos.x, enemies[j].pos.y, enemies[j].color, 20);
                         enemies.splice(j, 1);
                         score += 10;
                     }
+                    particles.createExplosion(b.pos.x, b.pos.y, '#0ff', 5); // Hit effect
                     hit = true;
                     break;
                 }
@@ -119,7 +138,8 @@ function runGame() {
             if (!hit) {
                 for (let j = asteroids.length - 1; j >= 0; j--) {
                     if (b.hits(asteroids[j])) {
-                        // Break asteroid? For now just destroy
+                        // Break asteroid
+                        particles.createExplosion(asteroids[j].pos.x, asteroids[j].pos.y, '#888', 15);
                         asteroids.splice(j, 1);
                         score += 5;
                         hit = true;
@@ -132,6 +152,7 @@ function runGame() {
         else if (b.owner === 'ENEMY') {
             if (b.hits(player)) {
                 player.takeDamage(10);
+                particles.createExplosion(player.pos.x, player.pos.y, '#f00', 10);
                 hit = true;
             }
         }

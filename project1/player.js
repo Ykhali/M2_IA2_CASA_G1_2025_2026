@@ -69,19 +69,24 @@ class Player {
 
         push();
         translate(this.pos.x, this.pos.y);
-        rotate(this.heading);
+        rotate(this.heading + PI / 2); // Adjust rotation because image points up
 
-        // Draw Triangle Ship
-        fill(0);
-        stroke(0, 255, 255); // Cyan
-        strokeWeight(2);
-        triangle(this.r, 0, -this.r, -this.r / 1.5, -this.r, this.r / 1.5);
+        imageMode(CENTER);
+        image(imgPlayer, 0, 0, this.r * 2.5, this.r * 2.5); // Draw ship
 
-        // Engine flame if moving
+        // Engine flame particles
         if (this.vel.mag() > 0.1) {
-            noStroke();
-            fill(255, 100, 0, map(Math.random(), 0, 1, 100, 255));
-            triangle(-this.r - 5, 0, -this.r, -5, -this.r, 5);
+            // Emit particles from bottom
+            let enginePos = createVector(0, this.r);
+            // rotate engine pos
+            // Actually since we transposed, the bottom is +y
+            if (frameCount % 3 === 0 && particles) { // Throttle particle creation
+                // Need absolute position for particles
+                // Calculate rear position based on ship rotation
+                let rear = p5.Vector.fromAngle(this.heading).mult(-this.r);
+                let pPos = p5.Vector.add(this.pos, rear);
+                particles.addParticle(pPos.x, pPos.y, '#0ff');
+            }
         }
 
         pop();
