@@ -50,19 +50,46 @@ class Snake extends Vehicle {
     }
 
     show() {
+        // Draw body first so head is on top
         push();
         noStroke();
         fill(this.color);
-
-        // Draw head
-        ellipse(this.pos.x, this.pos.y, this.r * 1.5);
-
-        // Draw body
         for (let i = 0; i < this.segments.length; i++) {
             let pos = this.segments[i];
             let size = map(i, 0, this.segments.length, this.r, 5);
             if (i % 2 === 0) ellipse(pos.x, pos.y, size);
         }
+        pop();
+
+        // Draw Head
+        push();
+        translate(this.pos.x, this.pos.y);
+        rotate(this.vel.heading());
+
+        // Tongue (Animated)
+        if (frameCount % 60 < 30) {
+            stroke(255, 0, 0);
+            strokeWeight(2);
+            noFill();
+            line(this.r / 2, 0, this.r + 5, 0); // Main tongue
+            line(this.r + 5, 0, this.r + 10, -3); // Fork
+            line(this.r + 5, 0, this.r + 10, 3); // Fork
+        }
+
+        noStroke();
+        fill(this.color);
+        ellipse(0, 0, this.r * 1.5, this.r * 1.3); // Head shape
+
+        // Eyes
+        fill(255);
+        ellipse(5, -5, 6, 6);
+        ellipse(5, 5, 6, 6);
+
+        // Pupils
+        fill(0);
+        ellipse(6, -5, 2, 2);
+        ellipse(6, 5, 2, 2);
+
         pop();
     }
 }
