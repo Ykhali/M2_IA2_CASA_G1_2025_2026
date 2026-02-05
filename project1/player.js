@@ -14,7 +14,12 @@ class Player {
         this.isDead = false;
 
         this.lastShotTime = 0;
-        this.shootCooldown = 15; // Frames
+        this.baseShootCooldown = 15;
+        this.boostedShootCooldown = 5;
+        this.currentShootCooldown = 15;
+
+        this.isBoosted = false;
+        this.boostTimer = 0;
     }
 
     update() {
@@ -54,6 +59,15 @@ class Player {
         this.acc.mult(0); // Reset acceleration
 
         this.edges();
+
+        // Handle Boost
+        if (this.isBoosted) {
+            this.boostTimer--;
+            if (this.boostTimer <= 0) {
+                this.isBoosted = false;
+                this.currentShootCooldown = this.baseShootCooldown;
+            }
+        }
     }
 
     edges() {
@@ -95,7 +109,7 @@ class Player {
     shoot(bullets) {
         if (this.isDead) return;
 
-        if (frameCount - this.lastShotTime > this.shootCooldown) {
+        if (frameCount - this.lastShotTime > this.currentShootCooldown) {
             if (mouseIsPressed && mouseButton === LEFT) {
                 // Spawn bullet at ship nose
                 let nose = p5.Vector.fromAngle(this.heading).mult(this.r);
@@ -104,6 +118,12 @@ class Player {
                 this.lastShotTime = frameCount;
             }
         }
+    }
+
+    activateBoost() {
+        this.isBoosted = true;
+        this.currentShootCooldown = this.boostedShootCooldown;
+        this.boostTimer = 300; // 5 seconds at 60fps
     }
 
     takeDamage(amount) {

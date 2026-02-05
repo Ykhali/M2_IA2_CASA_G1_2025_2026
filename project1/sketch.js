@@ -2,6 +2,7 @@ let player;
 let bullets = [];
 let enemies = [];
 let asteroids = [];
+let foods = []; // Power-ups
 let particles; // Particle System
 
 let score = 0;
@@ -43,6 +44,7 @@ function resetGame() {
     bullets = [];
     enemies = [];
     asteroids = [];
+    foods = [];
     particles = new ParticleSystem(); // Init Particles
     score = 0;
     updateUI();
@@ -186,6 +188,28 @@ function runGame() {
         } else if (p5.Vector.dist(a.pos, player.pos) < a.r + player.r) {
             player.takeDamage(10); // Collision damage
             // Bounce player?
+        }
+    }
+
+    // Food / Powerups
+    // Spawn random food
+    if (frameCount % 600 === 0) { // Every 10 seconds
+        foods.push(new Food(random(50, width - 50), random(50, height - 50)));
+    }
+
+    for (let i = foods.length - 1; i >= 0; i--) {
+        let f = foods[i];
+        f.update();
+        f.show();
+
+        // Collect
+        if (p5.Vector.dist(player.pos, f.pos) < player.r + f.r) {
+            player.activateBoost();
+            particles.createExplosion(player.pos.x, player.pos.y, '#0f0', 10);
+            foods.splice(i, 1);
+            score += 50;
+        } else if (f.isDead()) {
+            foods.splice(i, 1);
         }
     }
 
