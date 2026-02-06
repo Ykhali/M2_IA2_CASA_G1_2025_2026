@@ -43,9 +43,9 @@ function playGameOverSound() {
     playExplosionSound(1.5);
 
     // 2. Text to Speech "Game Over"
-    let msg = new SpeechSynthesisUtterance("Game Over");
-    msg.rate = 0.8; // Slower, more dramatic
-    msg.pitch = 0.5; // Deep voice
+    let msg = new SpeechSynthesisUtterance("Game Over! Total Disaster!");
+    msg.rate = 0.6; // Very slow (Dramatic/Funny)
+    msg.pitch = 0.1; // Extremely deep (Monster/Strong)
     msg.volume = 1.0;
 
     // Optional: Try to select a specific voice if available
