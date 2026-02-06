@@ -145,3 +145,10 @@ button:hover {
     box-shadow: 0 0 10px #f00;
     transition: width 0.2s;
 }
+
+#weapon-timer {
+    font-size: 1.5rem;
+    color: #ff0;
+    text-shadow: 0 0 5px #ff0;
+    font-weight: bold;
+}

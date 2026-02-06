@@ -40,6 +40,7 @@ function setup() {
     uiFinalScore = select('#final-score');
     uiLevelScreen = select('#level-screen');
     uiNextLevelText = select('#next-level-text');
+    uiWeaponTimer = select('#weapon-timer');
 
     // Buttons
     select('#start-btn').mousePressed(() => {
@@ -418,6 +419,15 @@ function updateUI() {
         uiLevel.html('LEVEL: ' + level);
         let hpPercent = (player.health / player.maxHealth) * 100;
         uiHealthFill.style('width', hpPercent + '%');
+
+        // Update Weapon Timer
+        if (player.isWeaponBoosted) {
+            uiWeaponTimer.removeClass('hidden');
+            let timeLeft = ceil(player.weaponBoostTimer / 60);
+            uiWeaponTimer.html('WEAPON: ' + timeLeft + 's');
+        } else {
+            uiWeaponTimer.addClass('hidden');
+        }
     }
 }
 
