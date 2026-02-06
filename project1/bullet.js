@@ -11,11 +11,11 @@ class Bullet {
         if (this.owner === 'PLAYER') {
             // Level 2+ gets stronger
             if (this.level >= 2) {
-                this.damage = 20;
+                this.damage = 25; // Kills Shooter (50HP) in 2 shots
                 this.r = 6;
             }
             if (this.level >= 3) {
-                this.damage = 30;
+                this.damage = 50; // One-shot kill for Shooter
                 this.r = 8;
             }
         }
