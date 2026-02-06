@@ -214,6 +214,10 @@ function runGame() {
     if (frameCount % 300 === 0) { // Every 5 seconds (Snake Food)
         foods.push(new Food(random(50, width - 50), random(50, height - 50), 'BIOMASS'));
     }
+    // Weapon Powerup (Rare, every 20 seconds)
+    if (frameCount % 1200 === 0) {
+        foods.push(new Food(random(50, width - 50), random(50, height - 50), 'WEAPON'));
+    }
 
     for (let i = foods.length - 1; i >= 0; i--) {
         let f = foods[i];
@@ -228,6 +232,11 @@ function runGame() {
                 player.activateBoost();
                 particles.createExplosion(player.pos.x, player.pos.y, '#0f0', 10);
                 score += 50;
+                eaten = true;
+            } else if (f.type === 'WEAPON') {
+                player.activateWeaponBoost();
+                particles.createExplosion(player.pos.x, player.pos.y, '#ffa500', 15);
+                score += 100;
                 eaten = true;
             }
         }

@@ -7,6 +7,8 @@ class Food {
 
         if (this.type === 'ENERGY') {
             this.color = color(0, 255, 0); // Green
+        } else if (this.type === 'WEAPON') {
+            this.color = color(255, 165, 0); // Orange
         } else {
             this.color = color(255, 0, 255); // Purple for Biomass
         }
@@ -25,7 +27,12 @@ class Food {
         scale(pulse);
 
         // Draw Energy Capsule (Procedural for now)
-        fill(this.type === 'ENERGY' ? color(0, 255, 0, 150) : color(255, 0, 255, 150));
+        let c;
+        if (this.type === 'ENERGY') c = color(0, 255, 0, 150);
+        else if (this.type === 'WEAPON') c = color(255, 165, 0, 150);
+        else c = color(255, 0, 255, 150);
+
+        fill(c);
         stroke(this.color);
         strokeWeight(2);
         rectMode(CENTER);
@@ -35,6 +42,12 @@ class Food {
             noStroke();
             fill(200, 255, 200);
             rect(0, 0, 10, 4, 2);
+        } else if (this.type === 'WEAPON') {
+            // Weapon Upgrade (Orange Square)
+            rect(0, 0, 15, 15);
+            noStroke();
+            fill(255, 200, 100);
+            rect(0, 0, 8, 8);
         } else {
             // Biomass shape (Circle/Blob)
             ellipse(0, 0, 15, 15);
