@@ -97,7 +97,7 @@ class Player {
         rotate(this.heading + PI / 2); // Adjust rotation because image points up
 
         imageMode(CENTER);
-        image(imgPlayer, 0, 0, this.r * 2.5, this.r * 2.5); // Draw ship
+        image(imgPlayer, 0, 0, this.r * 4.0, this.r * 4.0); // Draw ship
 
         // Engine flame particles
         if (this.vel.mag() > 0.1) {

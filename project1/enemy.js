@@ -100,7 +100,7 @@ class Enemy {
         imageMode(CENTER);
 
         if (this.type === 'SEEKER') {
-            image(imgEnemySeeker, 0, 0, this.r * 2.5, this.r * 2.5);
+            image(imgEnemySeeker, 0, 0, this.r * 4.0, this.r * 4.0);
         } else {
             image(imgEnemyShooter, 0, 0, this.r * 2.5, this.r * 2.5);
         }
