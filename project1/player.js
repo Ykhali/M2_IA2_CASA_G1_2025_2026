@@ -154,4 +154,11 @@ class Player {
             this.isDead = true;
         }
     }
+
+    heal(amount) {
+        this.health += amount;
+        if (this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+    }
 }

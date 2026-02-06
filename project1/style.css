@@ -43,6 +43,17 @@ canvas {
     box-shadow: 0 0 20px #0ff;
     pointer-events: auto;
     /* Re-enable clicks for UI elements */
+    z-index: 20;
+}
+
+#level-screen {
+    border-color: #f0f;
+    box-shadow: 0 0 30px #f0f;
+}
+
+#level-screen h1 {
+    color: #f0f;
+    text-shadow: 0 0 20px #f0f;
 }
 
 h1 {
@@ -71,7 +82,8 @@ p {
     margin-bottom: 5px;
     font-size: 1rem;
     color: #ccc;
-    font-family: 'Courier New', Courier, monospace; /* Tech look */
+    font-family: 'Courier New', Courier, monospace;
+    /* Tech look */
 }
 
 .controls-box strong {

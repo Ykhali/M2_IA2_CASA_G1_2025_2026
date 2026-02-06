@@ -10,6 +10,7 @@ let snakes = []; // Neutral/Hostile entities
 let particles; // Particle System
 
 let score = 0;
+let nextLevelScore = 300; // Track threshold explicitly
 let level = 1; // Current Level
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
 
@@ -37,6 +38,8 @@ function setup() {
     uiGameUI = select('#game-ui');
     uiGameOverScreen = select('#game-over-screen');
     uiFinalScore = select('#final-score');
+    uiLevelScreen = select('#level-screen');
+    uiNextLevelText = select('#next-level-text');
 
     // Buttons
     select('#start-btn').mousePressed(() => {
@@ -73,6 +76,7 @@ function resetGame() {
     snakes = [];
     particles = new ParticleSystem(); // Init Particles
     score = 0;
+    nextLevelScore = 300;
     level = 1; // Reset Level
     updateUI();
 }
@@ -330,16 +334,18 @@ function runGame() {
         if (p5.Vector.dist(player.pos, f.pos) < player.r + f.r) {
             if (f.type === 'ENERGY') {
                 player.activateBoost();
+                // Green Food: Heal 10%
+                player.heal(player.maxHealth * 0.1);
                 particles.createExplosion(player.pos.x, player.pos.y, '#0f0', 10);
-                score += 50;
+                // score += 50; // No score
                 eaten = true;
             } else if (f.type === 'WEAPON') {
                 player.activateWeaponBoost();
-                particles.createExplosion(player.pos.x, player.pos.y, '#ffa500', 15);
-                score += 100;
+                particles.createExplosion(player.pos.x, player.pos.y, '#ff0', 15);
+                // score += 100; // No score
                 eaten = true;
             } else if (f.type === 'BIOMASS') {
-                score += 10; // Small bonus for stealing snake food
+                score += 10; // Biomass still gives small score? leaving it or remove if user wants NO food score at all
                 eaten = true;
             }
         }
@@ -403,11 +409,9 @@ function runGame() {
 function updateUI() {
     if (gameState === 'PLAYING') {
         // Level Up Logic
-        let nextLevelScore = level * 300;
         if (score >= nextLevelScore) {
-            level++;
-            // Visual feedback?
-            // Increase difficulty (maybe in spawn logic)
+            startLevelTransition(level + 1);
+            nextLevelScore += 300; // Increment threshold
         }
 
         uiScore.html('SCORE: ' + score);
@@ -415,6 +419,23 @@ function updateUI() {
         let hpPercent = (player.health / player.maxHealth) * 100;
         uiHealthFill.style('width', hpPercent + '%');
     }
+}
+
+function startLevelTransition(nextLevel) {
+    gameState = 'TRANSITION';
+    uiLevelScreen.removeClass('hidden');
+    uiNextLevelText.html('Approaching Level ' + nextLevel);
+
+    // Sound?
+    // playLevelUpSound(); // TODO
+
+    setTimeout(() => {
+        level = nextLevel;
+        gameState = 'PLAYING';
+        uiLevelScreen.addClass('hidden');
+        // Bonus: Heal player slightly?
+        player.health = min(player.health + 20, player.maxHealth);
+    }, 3000); // 3 seconds wait
 }
 
 function gameOver() {

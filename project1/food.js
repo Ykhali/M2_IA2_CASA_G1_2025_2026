@@ -8,7 +8,7 @@ class Food {
         if (this.type === 'ENERGY') {
             this.color = color(0, 255, 0); // Green
         } else if (this.type === 'WEAPON') {
-            this.color = color(255, 165, 0); // Orange
+            this.color = color(255, 255, 0); // Yellow
         } else {
             this.color = color(255, 0, 255); // Purple for Biomass
         }
@@ -43,10 +43,10 @@ class Food {
             fill(200, 255, 200);
             rect(0, 0, 10, 4, 2);
         } else if (this.type === 'WEAPON') {
-            // Weapon Upgrade (Orange Square)
+            // Weapon Upgrade (Yellow Square)
             rect(0, 0, 15, 15);
             noStroke();
-            fill(255, 200, 100);
+            fill(255, 255, 100);
             rect(0, 0, 8, 8);
         } else {
             // Biomass shape (Circle/Blob)
