@@ -36,15 +36,15 @@ class Snake extends Vehicle {
     }
 
     grow() {
-        this.length += 3;
+        this.length += 2; // Adds roughly "one ball" of length
     }
 
     shrink() {
-        this.length -= 1;
+        this.length -= 2;
         if (this.length < 2) this.length = 2; // Minimum length
 
         // Immediate visual feedback: remove segment
-        if (this.segments.length > this.length) {
+        while (this.segments.length > this.length) {
             this.segments.pop();
         }
     }
@@ -52,13 +52,17 @@ class Snake extends Vehicle {
     show() {
         // Draw body first so head is on top
         push();
-        noStroke();
-        fill(this.color);
+        noFill();
+        stroke(this.color);
+        strokeWeight(this.r * 1.5);
+        strokeJoin(ROUND);
+
+        beginShape();
         for (let i = 0; i < this.segments.length; i++) {
             let pos = this.segments[i];
-            let size = map(i, 0, this.segments.length, this.r, 5);
-            if (i % 2 === 0) ellipse(pos.x, pos.y, size);
+            vertex(pos.x, pos.y);
         }
+        endShape();
         pop();
 
         // Draw Head

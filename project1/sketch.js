@@ -41,7 +41,10 @@ function setup() {
     let btn = createButton('Add Snake');
     btn.position(10, 70);
     btn.mousePressed(() => {
-        snakes.push(new Snake(random(width), random(height), '#a0f'));
+        let r = random(50, 255);
+        let g = random(50, 255);
+        let b = random(50, 255);
+        snakes.push(new Snake(random(width), random(height), color(r, g, b)));
     });
 
     resetGame();
@@ -303,6 +306,9 @@ function windowResized() {
 
 function keyPressed() {
     if (key === 's' || key === 'S') {
-        snakes.push(new Snake(random(width), random(height), '#a0f'));
+        let r = random(50, 255);
+        let g = random(50, 255);
+        let b = random(50, 255);
+        snakes.push(new Snake(random(width), random(height), color(r, g, b)));
     }
 }
