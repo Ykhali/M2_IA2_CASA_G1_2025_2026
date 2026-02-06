@@ -132,7 +132,7 @@ function runGame() {
     // Allies
     for (let i = allies.length - 1; i >= 0; i--) {
         let ally = allies[i];
-        ally.updateBehavior(player, enemies, bullets);
+        ally.updateBehavior(player, enemies, bullets, allies);
         ally.show();
         // Maybe ally health/death logic here later
     }

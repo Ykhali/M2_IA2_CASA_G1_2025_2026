@@ -72,15 +72,16 @@ class Ally extends Vehicle {
         translate(this.pos.x, this.pos.y);
         rotate(this.vel.heading() + PI / 2);
 
-        fill(this.color);
-        noStroke();
-        // Draw small drone shape
-        triangle(0, -this.r, -this.r / 2, this.r / 2, this.r / 2, this.r / 2);
+        imageMode(CENTER);
+        // Green Tint
+        tint(0, 255, 0);
+        image(imgPlayer, 0, 0, this.r * 4.0, this.r * 4.0); // Same size as player
+        noTint(); // Reset tint
 
         // Engine
         if (this.vel.mag() > 0.1) {
-            fill(0, 255, 255);
-            ellipse(0, this.r / 2, 5, 5);
+            fill(0, 255, 0);
+            ellipse(0, this.r, 5, 5);
         }
 
         pop();
