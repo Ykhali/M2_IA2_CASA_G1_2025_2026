@@ -238,6 +238,9 @@ function runGame() {
                 particles.createExplosion(player.pos.x, player.pos.y, '#ffa500', 15);
                 score += 100;
                 eaten = true;
+            } else if (f.type === 'BIOMASS') {
+                score += 10; // Small bonus for stealing snake food
+                eaten = true;
             }
         }
 
