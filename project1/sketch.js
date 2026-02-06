@@ -52,6 +52,21 @@ function setup() {
         startAudio();
     });
 
+    // Exit / Abort Button
+    // Exit / Abort Button
+    uiExitBtn = select('#exit-btn');
+    uiExitBtn.mousePressed(() => {
+        gameState = 'MENU';
+        uiGameUI.addClass('hidden');
+        uiLevelScreen.addClass('hidden'); // Ensure transition screen is hidden
+        uiGameOverScreen.addClass('hidden');
+        uiExitBtn.addClass('hidden'); // Hide Abort button
+        uiStartScreen.removeClass('hidden');
+
+        // Stop audio?
+        // simple way: maybe just leave context running, but stop loops if any
+    });
+
     // UI for spawning snakes (Dynamically created for now)
     let btn = createButton('Add Snake');
     btn.position(10, 70);
@@ -89,6 +104,7 @@ function startGame() {
     uiStartScreen.addClass('hidden');
     uiGameOverScreen.addClass('hidden');
     uiGameUI.removeClass('hidden');
+    uiExitBtn.removeClass('hidden'); // Show Abort button
 
     // Spawn initial asteroids
     for (let i = 0; i < 5; i++) {
@@ -453,6 +469,7 @@ function gameOver() {
     gameState = 'GAMEOVER';
     uiGameUI.addClass('hidden');
     uiGameOverScreen.removeClass('hidden');
+    uiExitBtn.addClass('hidden'); // Hide Abort button
     uiFinalScore.html('Final Score: ' + score);
 }
 

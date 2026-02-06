@@ -160,3 +160,27 @@ button:hover {
     align-items: center;
     justify-content: center;
 }
+
+#health-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#exit-btn {
+    background: transparent;
+    border: 2px solid #f00;
+    color: #f00;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+#exit-btn:hover {
+    background: #f00;
+    color: #fff;
+    box-shadow: 0 0 10px #f00;
+}
