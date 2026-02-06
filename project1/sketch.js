@@ -13,6 +13,7 @@ let score = 0;
 let nextLevelScore = 300; // Track threshold explicitly
 let level = 1; // Current Level
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
+let debugMode = false;
 
 let uiScore, uiLevel, uiHealthBar, uiHealthFill, uiStartScreen, uiGameUI, uiGameOverScreen, uiFinalScore;
 
@@ -441,10 +442,65 @@ function updateUI() {
             uiWeaponTimer.removeClass('hidden');
             let timeLeft = ceil(player.weaponBoostTimer / 60);
             uiWeaponTimer.html('WEAPON: ' + timeLeft + 's');
-        } else {
             uiWeaponTimer.addClass('hidden');
         }
+
+        if (debugMode) {
+            drawDebug();
+        }
     }
+}
+
+function drawDebug() {
+    push();
+    noFill();
+    strokeWeight(1);
+
+    // Player Hitbox
+    stroke(0, 255, 0);
+    circle(player.pos.x, player.pos.y, player.r * 2);
+
+    // Enemies
+    stroke(255, 0, 0);
+    for (let e of enemies) {
+        circle(e.pos.x, e.pos.y, e.r * 2);
+        // line(e.pos.x, e.pos.y, e.pos.x + e.vel.x * 10, e.pos.y + e.vel.y * 10);
+    }
+
+    // Asteroids
+    stroke(150);
+    for (let a of asteroids) {
+        circle(a.pos.x, a.pos.y, a.r * 2);
+    }
+
+    // Snakes
+    stroke(255, 100, 100);
+    for (let s of snakes) {
+        circle(s.pos.x, s.pos.y, s.r * 2);
+    }
+
+    // Bullets
+    stroke(255, 255, 0);
+    for (let b of bullets) {
+        circle(b.pos.x, b.pos.y, b.r * 2);
+    }
+
+    // Food
+    stroke(0, 255, 255);
+    for (let f of foods) {
+        circle(f.pos.x, f.pos.y, f.r * 2);
+    }
+
+    // Info
+    fill(255);
+    noStroke();
+    textSize(12);
+    textAlign(LEFT, TOP);
+    text(`FPS: ${floor(frameRate())}`, 10, 100);
+    text(`Enemies: ${enemies.length}`, 10, 120);
+    text(`Asteroids: ${asteroids.length}`, 10, 140);
+    text(`Bullets: ${bullets.length}`, 10, 160);
+    pop();
 }
 
 function startLevelTransition(nextLevel) {
@@ -489,5 +545,11 @@ function keyPressed() {
     // Spawn Ally
     if (key === 'p' || key === 'P') {
         allies.push(new Ally(player.pos.x + random(-50, 50), player.pos.y + random(-50, 50)));
+    }
+
+    // Toggle Debug Mode
+    if (key === 'o' || key === 'O') {
+        debugMode = !debugMode;
+        console.log("Debug Mode:", debugMode);
     }
 }
