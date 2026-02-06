@@ -2,6 +2,8 @@ let player;
 let bullets = [];
 let enemies = [];
 let asteroids = [];
+let mines = [];
+let debris = [];
 let foods = []; // Power-ups
 let snakes = []; // Neutral/Hostile entities
 let particles; // Particle System
@@ -57,6 +59,8 @@ function resetGame() {
     bullets = [];
     enemies = [];
     asteroids = [];
+    mines = [];
+    debris = [];
     foods = [];
     snakes = [];
     particles = new ParticleSystem(); // Init Particles
@@ -164,6 +168,36 @@ function runGame() {
                     }
                 }
             }
+            // Player Bullets affecting Mines
+            if (!hit) {
+                for (let j = mines.length - 1; j >= 0; j--) {
+                    if (b.hits(mines[j])) {
+                        particles.createExplosion(mines[j].pos.x, mines[j].pos.y, '#f00', 30);
+                        // Explosion damage nearby enemies?
+                        for (let k = enemies.length - 1; k >= 0; k--) {
+                            if (p5.Vector.dist(mines[j].pos, enemies[k].pos) < 100) {
+                                enemies[k].takeDamage(50);
+                            }
+                        }
+                        mines.splice(j, 1);
+                        score += 20;
+                        hit = true;
+                        break;
+                    }
+                }
+            }
+            // Bullets affecting Debris
+            if (!hit) {
+                for (let j = debris.length - 1; j >= 0; j--) {
+                    if (b.hits(debris[j])) {
+                        particles.createExplosion(debris[j].pos.x, debris[j].pos.y, '#888', 5);
+                        debris.splice(j, 1);
+                        score += 2;
+                        hit = true;
+                        break;
+                    }
+                }
+            }
         }
         // Enemy Bullets affecting Player
         else if (b.owner === 'ENEMY') {
@@ -204,6 +238,53 @@ function runGame() {
             player.takeDamage(10); // Collision damage
             // Bounce player?
         }
+    }
+
+    // Mines (Level 3+)
+    if (level >= 3 && frameCount % 600 === 0) { // Every 10s
+        mines.push(new Mine());
+    }
+
+    for (let i = mines.length - 1; i >= 0; i--) {
+        let m = mines[i];
+        m.update();
+        m.show();
+
+        // Collision Player
+        if (p5.Vector.dist(m.pos, player.pos) < m.r + player.r + 5) {
+            m.explode(player);
+            particles.createExplosion(m.pos.x, m.pos.y, '#f00', 30);
+            mines.splice(i, 1);
+        }
+    }
+
+    // Debris (Level 2+)
+    if (level >= 2 && frameCount % 60 === 0) { // Every 1s
+        debris.push(new Debris());
+    }
+
+    for (let i = debris.length - 1; i >= 0; i--) {
+        let d = debris[i];
+        d.update();
+        d.show();
+
+        if (d.edges()) {
+            debris.splice(i, 1);
+        } else if (p5.Vector.dist(d.pos, player.pos) < d.r + player.r) {
+            player.takeDamage(5); // Low Damage
+            debris.splice(i, 1);
+        }
+    }
+
+    // Bullet Collisions with Mines/Debris
+    for (let i = bullets.length - 1; i >= 0; i--) {
+        let b = bullets[i];
+        let hit = false;
+
+        // ... (Existing enemy/asteroid logic would be here, but easier to insert checks if possible)
+        // Since we are iterating bullets here in runGame for collision, we need to add checks
+        // However, the main bullet loop is above. Let's merge logic or add dedicated loop.
+        // For simplicity, let's look at the bullet loop in runGame and add it there.
     }
 
     // Food / Powerups
