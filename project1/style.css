@@ -151,4 +151,12 @@ button:hover {
     color: #ff0;
     text-shadow: 0 0 5px #ff0;
     font-weight: bold;
+    margin-left: 15px;
+    /* Spacing if side-by-side */
+}
+
+#level-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
