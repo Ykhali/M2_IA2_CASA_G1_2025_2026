@@ -37,3 +37,20 @@ function playExplosionSound(size = 1.0) {
 function startAudio() {
     userStartAudio();
 }
+
+function playGameOverSound() {
+    // 1. Explosion (Background rumble)
+    playExplosionSound(1.5);
+
+    // 2. Text to Speech "Game Over"
+    let msg = new SpeechSynthesisUtterance("Game Over");
+    msg.rate = 0.8; // Slower, more dramatic
+    msg.pitch = 0.5; // Deep voice
+    msg.volume = 1.0;
+
+    // Optional: Try to select a specific voice if available
+    let voices = window.speechSynthesis.getVoices();
+    // Prefer a "Google US English" or similar if possible, but default is fine
+
+    window.speechSynthesis.speak(msg);
+}

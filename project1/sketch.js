@@ -418,7 +418,7 @@ function updateUI() {
 }
 
 function gameOver() {
-    playExplosionSound(2.5); // Game Over Boom
+    playGameOverSound(); // Game Over Custom Sound
     gameState = 'GAMEOVER';
     uiGameUI.addClass('hidden');
     uiGameOverScreen.removeClass('hidden');
