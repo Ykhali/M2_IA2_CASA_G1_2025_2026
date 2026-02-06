@@ -106,7 +106,7 @@ class Player {
         pop();
     }
 
-    shoot(bullets) {
+    shoot(bullets, level = 1) {
         if (this.isDead) return;
 
         if (frameCount - this.lastShotTime > this.currentShootCooldown) {
@@ -114,7 +114,7 @@ class Player {
                 // Spawn bullet at ship nose
                 let nose = p5.Vector.fromAngle(this.heading).mult(this.r);
                 let spawnPos = p5.Vector.add(this.pos, nose);
-                bullets.push(new Bullet(spawnPos.x, spawnPos.y, this.heading, 'PLAYER'));
+                bullets.push(new Bullet(spawnPos.x, spawnPos.y, this.heading, 'PLAYER', level));
                 this.lastShotTime = frameCount;
             }
         }

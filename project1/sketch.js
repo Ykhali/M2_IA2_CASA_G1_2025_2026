@@ -7,9 +7,10 @@ let snakes = []; // Neutral/Hostile entities
 let particles; // Particle System
 
 let score = 0;
+let level = 1; // Current Level
 let gameState = 'MENU'; // MENU, PLAYING, GAMEOVER
 
-let uiScore, uiHealthBar, uiHealthFill, uiStartScreen, uiGameUI, uiGameOverScreen, uiFinalScore;
+let uiScore, uiLevel, uiHealthBar, uiHealthFill, uiStartScreen, uiGameUI, uiGameOverScreen, uiFinalScore;
 
 // Assets
 let imgPlayer, imgEnemySeeker, imgEnemyShooter, imgAsteroid, imgBg;
@@ -27,6 +28,7 @@ function setup() {
 
     // UI References
     uiScore = select('#score');
+    uiLevel = select('#level'); // Level Display
     uiHealthFill = select('#health-fill');
     uiStartScreen = select('#start-screen');
     uiGameUI = select('#game-ui');
@@ -59,6 +61,7 @@ function resetGame() {
     snakes = [];
     particles = new ParticleSystem(); // Init Particles
     score = 0;
+    level = 1; // Reset Level
     updateUI();
 }
 
@@ -118,7 +121,7 @@ function runGame() {
     // Player
     player.update();
     player.show();
-    player.shoot(bullets);
+    player.shoot(bullets, level);
 
     // Check Player Death
     if (player.isDead) {
@@ -137,7 +140,7 @@ function runGame() {
         if (b.owner === 'PLAYER') {
             for (let j = enemies.length - 1; j >= 0; j--) {
                 if (b.hits(enemies[j])) {
-                    if (enemies[j].takeDamage(10)) {
+                    if (enemies[j].takeDamage(b.damage)) { // Use bullet damage
                         // Explosion
                         particles.createExplosion(enemies[j].pos.x, enemies[j].pos.y, enemies[j].color, 20);
                         enemies.splice(j, 1);
@@ -286,7 +289,16 @@ function runGame() {
 
 function updateUI() {
     if (gameState === 'PLAYING') {
+        // Level Up Logic
+        let nextLevelScore = level * 300;
+        if (score >= nextLevelScore) {
+            level++;
+            // Visual feedback?
+            // Increase difficulty (maybe in spawn logic)
+        }
+
         uiScore.html('SCORE: ' + score);
+        uiLevel.html('LEVEL: ' + level);
         let hpPercent = (player.health / player.maxHealth) * 100;
         uiHealthFill.style('width', hpPercent + '%');
     }
