@@ -54,3 +54,24 @@ function playGameOverSound() {
 
     window.speechSynthesis.speak(msg);
 }
+
+function playLevelUpSound() {
+    let osc = new p5.Oscillator('sine');
+    let env = new p5.Envelope();
+
+    osc.start();
+    osc.freq(440);
+    osc.amp(env);
+
+    // Rising arpeggio effect
+    osc.freq(440);
+    osc.freq(554, 0.1); // C#
+    osc.freq(659, 0.2); // E
+    osc.freq(880, 0.3); // A (High)
+
+    env.setADSR(0.01, 0.1, 0.5, 0.5);
+    env.setRange(0.5, 0);
+    env.play();
+
+    osc.stop(1.0);
+}
