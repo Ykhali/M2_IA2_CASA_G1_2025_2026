@@ -62,6 +62,7 @@ class Ally extends Vehicle {
             // Ally bullets are 'PLAYER' owner so they hurt enemies
             // Pass level 1 for now (or maybe player level?)
             bullets.push(new Bullet(bulletPos.x, bulletPos.y, heading, 'PLAYER', 1));
+            playShootSound(1.5); // Higher pitch for allies
 
             this.lastShotTime = frameCount;
         }

@@ -130,6 +130,7 @@ class Player {
                 if (this.isWeaponBoosted) effectiveLevel += 2; // Boost level by 2
 
                 bullets.push(new Bullet(spawnPos.x, spawnPos.y, this.heading, 'PLAYER', effectiveLevel));
+                playShootSound(1.0); // Normal pitch
                 this.lastShotTime = frameCount;
             }
         }

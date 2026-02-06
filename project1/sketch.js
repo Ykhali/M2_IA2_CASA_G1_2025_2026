@@ -39,8 +39,14 @@ function setup() {
     uiFinalScore = select('#final-score');
 
     // Buttons
-    select('#start-btn').mousePressed(startGame);
-    select('#restart-btn').mousePressed(startGame);
+    select('#start-btn').mousePressed(() => {
+        startGame();
+        startAudio();
+    });
+    select('#restart-btn').mousePressed(() => {
+        startGame();
+        startAudio();
+    });
 
     // UI for spawning snakes (Dynamically created for now)
     let btn = createButton('Add Snake');
@@ -157,6 +163,7 @@ function runGame() {
                     if (enemies[j].takeDamage(b.damage)) { // Use bullet damage
                         // Explosion
                         particles.createExplosion(enemies[j].pos.x, enemies[j].pos.y, enemies[j].color, 20);
+                        playExplosionSound(1.5); // Large boom
                         enemies.splice(j, 1);
                         score += 10;
                     }
@@ -171,6 +178,7 @@ function runGame() {
                     if (b.hits(asteroids[j])) {
                         // Break asteroid
                         particles.createExplosion(asteroids[j].pos.x, asteroids[j].pos.y, '#888', 15);
+                        playExplosionSound(1.0); // Medium boom
                         asteroids.splice(j, 1);
                         score += 5;
                         hit = true;
@@ -183,6 +191,7 @@ function runGame() {
                 for (let j = mines.length - 1; j >= 0; j--) {
                     if (b.hits(mines[j])) {
                         particles.createExplosion(mines[j].pos.x, mines[j].pos.y, '#f00', 30);
+                        playExplosionSound(2.0); // Massive boom
                         // Explosion damage nearby enemies?
                         for (let k = enemies.length - 1; k >= 0; k--) {
                             if (p5.Vector.dist(mines[j].pos, enemies[k].pos) < 100) {
@@ -380,6 +389,7 @@ function runGame() {
                 // If snake is too small, maybe kill it? For now just shrink minimum
                 if (s.length <= 2) {
                     snakes.splice(i, 1);
+                    playExplosionSound(1.2); // Snake dies
                     score += 100;
                     break; // Snake died
                 }
@@ -408,6 +418,7 @@ function updateUI() {
 }
 
 function gameOver() {
+    playExplosionSound(2.5); // Game Over Boom
     gameState = 'GAMEOVER';
     uiGameUI.addClass('hidden');
     uiGameOverScreen.removeClass('hidden');
@@ -428,7 +439,7 @@ function keyPressed() {
     }
 
     // Spawn Ally
-    if (key === 'p') {
+    if (key === 'p' || key === 'P') {
         allies.push(new Ally(player.pos.x + random(-50, 50), player.pos.y + random(-50, 50)));
     }
 }

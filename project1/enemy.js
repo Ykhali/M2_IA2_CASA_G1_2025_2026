@@ -88,6 +88,7 @@ class Enemy {
 
             let bulletPos = this.pos.copy().add(p5.Vector.fromAngle(heading).mult(this.r + 5));
             bullets.push(new Bullet(bulletPos.x, bulletPos.y, heading, 'ENEMY'));
+            playShootSound(0.5); // Lower pitch for enemies
             this.lastShotTime = frameCount;
         }
     }
