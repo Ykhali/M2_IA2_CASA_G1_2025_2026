@@ -444,10 +444,12 @@ function updateUI() {
         uiHealthFill.style('width', hpPercent + '%');
 
         // Update Weapon Timer
+        // Update Weapon Timer
         if (player.isWeaponBoosted) {
             uiWeaponTimer.removeClass('hidden');
             let timeLeft = ceil(player.weaponBoostTimer / 60);
             uiWeaponTimer.html('WEAPON: ' + timeLeft + 's');
+        } else {
             uiWeaponTimer.addClass('hidden');
         }
 
@@ -514,8 +516,8 @@ function startLevelTransition(nextLevel) {
     uiLevelScreen.removeClass('hidden');
     uiNextLevelText.html('Approaching Level ' + nextLevel);
 
-    // Sound?
-    // playLevelUpSound(); // TODO
+    // Sound
+    playLevelUpSound();
 
     setTimeout(() => {
         level = nextLevel;
