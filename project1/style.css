@@ -54,8 +54,28 @@ h1 {
 
 p {
     font-size: 1.2rem;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: #aaa;
+}
+
+.controls-box {
+    text-align: left;
+    background: rgba(0, 255, 255, 0.1);
+    padding: 15px 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border-left: 3px solid #0ff;
+}
+
+.controls-box p {
+    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace; /* Tech look */
+}
+
+.controls-box strong {
+    color: #0ff;
 }
 
 button {
