@@ -433,8 +433,8 @@ function startLevelTransition(nextLevel) {
         level = nextLevel;
         gameState = 'PLAYING';
         uiLevelScreen.addClass('hidden');
-        // Bonus: Heal player slightly?
-        player.health = min(player.health + 20, player.maxHealth);
+        // Full Health Reset on Level Up
+        player.health = player.maxHealth;
     }, 3000); // 3 seconds wait
 }
 
