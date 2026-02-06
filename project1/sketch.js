@@ -153,6 +153,7 @@ function runGame() {
     }
 
     // Player
+    player.applyBehaviors();
     player.update();
     player.show();
     player.shoot(bullets, level);
@@ -160,7 +161,7 @@ function runGame() {
     // Allies
     for (let i = allies.length - 1; i >= 0; i--) {
         let ally = allies[i];
-        ally.updateBehavior(player, enemies, bullets, allies);
+        ally.applyBehaviors(player, enemies, bullets);
         ally.show();
         // Maybe ally health/death logic here later
     }
@@ -257,7 +258,8 @@ function runGame() {
     // Enemies
     for (let i = enemies.length - 1; i >= 0; i--) {
         let e = enemies[i];
-        e.update(player, bullets);
+        e.applyBehaviors(player, bullets);
+        e.update();
         e.show();
 
         // Collision with Player
@@ -390,7 +392,11 @@ function runGame() {
             }
         }
 
-        s.updateSnake(closestFood);
+        s.applyBehaviors(closestFood);
+        s.update();
+        s.show();
+        // update calls super.update() and manages segments.
+        // So yes, call both.
         s.show();
 
         // Eating Logic
@@ -535,7 +541,7 @@ function windowResized() {
 }
 
 function keyPressed() {
-    if (key === 's' || key === 'S') {
+    if (key === 'n' || key === 'N') {
         let r = random(50, 255);
         let g = random(50, 255);
         let b = random(50, 255);

@@ -1,8 +1,6 @@
-class Player {
+class Player extends Vehicle {
     constructor() {
-        this.pos = createVector(width / 2, height / 2);
-        this.vel = createVector(0, 0);
-        this.acc = createVector(0, 0);
+        super(width / 2, height / 2);
         this.r = 20; // Radius
         this.heading = 0;
         this.maxSpeed = 6;
@@ -25,9 +23,7 @@ class Player {
         this.weaponBoostTimer = 0;
     }
 
-    update() {
-        if (this.isDead) return;
-
+    applyBehaviors() {
         // Rotate towards mouse
         let mousePos = createVector(mouseX, mouseY);
         let dir = p5.Vector.sub(mousePos, this.pos);
@@ -51,15 +47,17 @@ class Player {
         // Normalize and apply force
         if (force.mag() > 0) {
             force.setMag(0.5); // Acceleration strength
-            this.acc.add(force);
+            this.applyForce(force);
         }
+    }
 
-        // Physics update
-        this.vel.add(this.acc);
-        this.vel.limit(this.maxSpeed);
-        this.vel.mult(this.friction); // Drag
-        this.pos.add(this.vel);
-        this.acc.mult(0); // Reset acceleration
+    update() {
+        if (this.isDead) return;
+
+        super.update();
+
+        // Drag (Space friction) - Manually apply to velocity since Vehicle doesn't have drag
+        this.vel.mult(this.friction);
 
         this.edges();
 

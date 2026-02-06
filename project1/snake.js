@@ -13,7 +13,7 @@ class Snake extends Vehicle {
         }
     }
 
-    updateSnake(targetFood) {
+    applyBehaviors(targetFood) {
         // Behavior: Seek food if exists, otherwise wander
         if (targetFood) {
             let seekForce = this.seek(targetFood.pos);
@@ -22,8 +22,10 @@ class Snake extends Vehicle {
             let wanderForce = this.wander();
             this.applyForce(wanderForce);
         }
+    }
 
-        this.update(); // Update physics (head)
+    update() {
+        super.update(); // Physics from Vehicle
         this.edges();
 
         // Update body segments (Snake trail)

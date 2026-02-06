@@ -12,7 +12,7 @@ class Ally extends Vehicle {
         this.detectRange = 300;
     }
 
-    updateBehavior(player, enemies, bullets) {
+    applyBehaviors(player, enemies, bullets) {
         // 1. Follow Player (Arrive)
         let arriveForce = this.arrive(player.pos);
         // Maintain some distance (don't sit on top of player)
