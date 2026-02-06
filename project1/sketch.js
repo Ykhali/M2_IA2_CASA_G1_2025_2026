@@ -4,6 +4,7 @@ let enemies = [];
 let asteroids = [];
 let mines = [];
 let debris = [];
+let allies = []; // Helper bots
 let foods = []; // Power-ups
 let snakes = []; // Neutral/Hostile entities
 let particles; // Particle System
@@ -61,6 +62,7 @@ function resetGame() {
     asteroids = [];
     mines = [];
     debris = [];
+    allies = [];
     foods = [];
     snakes = [];
     particles = new ParticleSystem(); // Init Particles
@@ -126,6 +128,14 @@ function runGame() {
     player.update();
     player.show();
     player.shoot(bullets, level);
+
+    // Allies
+    for (let i = allies.length - 1; i >= 0; i--) {
+        let ally = allies[i];
+        ally.updateBehavior(player, enemies, bullets);
+        ally.show();
+        // Maybe ally health/death logic here later
+    }
 
     // Check Player Death
     if (player.isDead) {
@@ -415,5 +425,10 @@ function keyPressed() {
         let g = random(50, 255);
         let b = random(50, 255);
         snakes.push(new Snake(random(width), random(height), color(r, g, b)));
+    }
+
+    // Spawn Ally
+    if (key === 'p') {
+        allies.push(new Ally(player.pos.x + random(-50, 50), player.pos.y + random(-50, 50)));
     }
 }
